@@ -1,0 +1,24 @@
+{
+    "name": "Reels",
+    "class": "Reels",
+    "url": "https://sikido.vn",
+    "description": "Video ngắn dạng TikTok, mỗi video đính kèm một sản phẩm kèm nút mua ngay.",
+    "author": "SkillDo",
+    "version": "1.0.0",
+    "thumb": "assets/thumb.jpg",
+    "dependent": {
+        "sicommerce": "5.0.0"
+    },
+    "autoload": {
+        "alias": "Reels"
+    },
+    "providers": [
+        "\\Reels\\Providers\\ReelsServiceProvider"
+    ],
+    "aliases": {
+        "controller": {
+            "Reels\\Controllers\\Admin\\ReelController": "reels",
+            "Reels\\Controllers\\Web\\ReelController": "reels_web"
+        }
+    }
+}

@@ -1,0 +1,100 @@
+<?php
+
+return [
+
+    'menu' => [
+        'root'    => 'Video Reels',
+        'list'    => 'All videos',
+        'add'     => 'Add video',
+        'setting' => 'Settings',
+    ],
+
+    'role' => [
+        'group'   => 'Video Reels',
+        'view'    => 'View video list',
+        'add'     => 'Add video',
+        'edit'    => 'Edit video',
+        'delete'  => 'Delete video',
+        'setting' => 'Configure Video Reels',
+    ],
+
+    'name' => 'Video',
+
+    'form' => [
+        'group' => [
+            'info'    => 'Video information',
+            'video'   => 'Video source',
+            'attach'  => 'Attached content',
+            'display' => 'Display',
+            'seo'     => 'Permalink',
+        ],
+        'slug'      => 'Slug',
+        'slug_note' => 'Leave empty to generate from the title. Duplicates get a -1, -2... suffix.',
+        'title'       => 'Title',
+        'description' => 'Short description',
+        'source'      => 'Video source',
+        'source_upload'  => 'Upload MP4 file',
+        'source_youtube' => 'YouTube link',
+        'video_file'  => 'Video file (mp4)',
+        'video_file_note' => 'Use a vertical 9:16 video; smaller files load faster.',
+        'video_url'   => 'YouTube URL',
+        'video_url_note' => 'Paste a link like https://www.youtube.com/watch?v=... or https://youtu.be/...',
+        'product'     => 'Product',
+        'product_note'=> 'Each video is attached to exactly one product, shown with a Buy now button.',
+        'attach_type'    => 'Attach content',
+        'attach_product' => 'Product',
+        'attach_custom'  => 'Custom (post, service...)',
+        'attach_none'    => 'Nothing',
+        'attach_no_shop' => 'The commerce plugin (sicommerce) is disabled, so only custom content can be attached.',
+        'attach_title'   => 'Display name',
+        'attach_url'     => 'Link',
+        'attach_url_note'=> 'A post/page slug (e.g. massage-service) or a full link starting with https://',
+        'attach_price'   => 'Price / sub label',
+        'attach_price_note' => 'Optional, free text: "From $20", "Contact us"...',
+        'attach_button'  => 'Button text',
+        'attach_button_note' => 'Leave empty to use "View detail".',
+        'attach_image'   => 'Thumbnail',
+        'image'       => 'Poster image',
+        'image_note'  => 'Required for uploaded MP4. For YouTube, leave empty to use the auto thumbnail.',
+        'public'      => 'Status',
+        'public_show' => 'Published',
+        'public_hide' => 'Hidden',
+        'order'       => 'Order',
+    ],
+
+    'table' => [
+        'title'   => 'Video',
+        'attach'  => 'Attached',
+        'view'    => 'Views',
+        'like'    => 'Likes',
+        'source'  => 'Source',
+        'created' => 'Created',
+        'search'  => 'Search by title...',
+        'all_source' => 'All sources',
+        'all_status' => 'All statuses',
+    ],
+
+    'delete' => [
+        'heading'     => 'Delete video',
+        'description' => 'Are you sure you want to delete <b>:title</b>?',
+        'empty'       => 'Nothing to delete',
+    ],
+
+    'validate' => [
+        'video_file' => 'Please choose an MP4 video file.',
+        'video_url'  => 'The YouTube URL is not valid.',
+        'image'      => 'Please choose a poster image for the uploaded video.',
+        'attach_title' => 'Please enter a display name for the attached content.',
+        'attach_url'   => 'Please enter a link for the attached content.',
+    ],
+
+    'setting' => [
+        'heading'     => 'Video Reels',
+        'description' => 'Display settings for the short-video area.',
+        'per_page'    => 'Videos per page',
+        'social_note' => 'The Zalo and Messenger buttons in the viewer come from '
+            . '<b>System → Contact → Social</b> (<i>Zalo</i> and '
+            . '<i>Facebook messenger Id</i>). Leave one empty to hide its button.',
+        'saved'       => 'Settings saved',
+    ],
+];

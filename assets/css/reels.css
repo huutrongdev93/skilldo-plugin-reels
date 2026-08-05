@@ -1,0 +1,696 @@
+/* =========================================================================
+   Video Reels
+   ========================================================================= */
+
+:root {
+    --reels-radius: 12px;
+    --reels-gap: 20px;
+}
+
+/* ---------- Trang danh sách ---------- */
+
+.reels-page {
+    padding: 24px 0 48px;
+}
+
+.reels-page__title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 16px;
+}
+
+.reels-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.reels-tab {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1px solid #e2e2e2;
+    background: #fff;
+    color: #333;
+    font-size: 14px;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: all .18s ease;
+}
+
+.reels-tab:hover {
+    border-color: var(--theme-color, #ff2d55);
+    color: var(--theme-color, #ff2d55);
+}
+
+.reels-tab.is-active {
+    background: var(--theme-color, #ff2d55);
+    border-color: var(--theme-color, #ff2d55);
+    color: #fff;
+}
+
+.reels-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--reels-gap);
+}
+
+.reels-card {
+    position: relative;
+    background: #111;
+    border-radius: var(--reels-radius);
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, .08);
+}
+
+.reels-card__media {
+    position: relative;
+    display: block;
+    /* Khung 9:16 cố định để lưới không nhảy khi ảnh poster tải xong */
+    aspect-ratio: 9 / 16;
+    background: #111;
+    overflow: hidden;
+}
+
+/* Link mở video phủ kín ảnh nhưng nằm dưới overlay sản phẩm */
+.reels-card__link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+}
+
+.reels-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .3s ease;
+}
+
+.reels-card:hover .reels-card__media img {
+    transform: scale(1.04);
+}
+
+.reels-card__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, .45);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    pointer-events: none;
+}
+
+.reels-card__views {
+    position: absolute;
+    left: 10px;
+    /* Nằm trên đỉnh để không đè lên khối sản phẩm ở đáy khung */
+    top: 10px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, .55);
+    color: #fff;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+/* Khối sản phẩm nằm trong khung video, đáy ảnh */
+.reels-card__overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 26px 8px 8px;
+    background: linear-gradient(to top, rgba(0, 0, 0, .5), transparent);
+}
+
+.reels-card__title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    padding: 6px 8px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, .55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.reels-card__title:hover {
+    color: #fff;
+}
+
+.reels-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.reels-empty {
+    padding: 40px 0;
+    text-align: center;
+    color: #777;
+}
+
+.reels-more {
+    margin-top: 28px;
+    text-align: center;
+}
+
+.reels-more__btn {
+    padding: 10px 32px;
+    border-radius: 999px;
+    border: 1px solid var(--theme-color, #ff2d55);
+    background: #fff;
+    color: var(--theme-color, #ff2d55);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.reels-more__btn:disabled {
+    opacity: .6;
+    cursor: default;
+}
+
+/* ---------- Card sản phẩm ----------
+   Khối này luôn nằm đè lên ảnh/video nên mặc định là "kính mờ" nền tối:
+   đọc được trên mọi poster mà không che mất hình phía sau. */
+
+.reels-product {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    grid-template-areas: "thumb info" "buy buy";
+    gap: 6px 8px;
+    align-items: center;
+    padding: 6px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, .55);
+    /* Trình duyệt không hỗ trợ backdrop-filter vẫn còn nền rgba ở trên */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.reels-product__thumb {
+    grid-area: thumb;
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, .12);
+}
+
+/* Không có ô thumb thì info chiếm nốt cột đầu, tránh chừa khoảng trống.
+   Dùng class từ blade thay vì :has() để không phụ thuộc trình duyệt mới. */
+.reels-product--no-thumb {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "info" "buy";
+}
+
+.reels-slide__info .reels-product--no-thumb {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "info buy";
+}
+
+.reels-product__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.reels-product__info {
+    grid-area: info;
+    min-width: 0;
+}
+
+.reels-product__name {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 1.35;
+    color: #fff;
+    text-decoration: none;
+}
+
+.reels-product__name:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.reels-product__price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 12px;
+}
+
+.reels-product__price-now {
+    color: #fff;
+    font-weight: 700;
+}
+
+.reels-product__price-old {
+    color: rgba(255, 255, 255, .6);
+    font-size: 11px;
+    text-decoration: line-through;
+}
+
+.reels-product__buy {
+    grid-area: buy;
+    display: block;
+    text-align: center;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--theme-color, #ff2d55);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.reels-product__buy:hover {
+    color: #fff;
+    filter: brightness(1.08);
+}
+
+/* ---------- Viewer full màn hình ---------- */
+
+.reels-viewer {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #000;
+}
+
+.reels-viewer[hidden] {
+    display: none;
+}
+
+body.reels-viewer-open {
+    overflow: hidden;
+}
+
+.reels-viewer__track {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* scroll-snap lo phần vuốt/cuộn: mượt và đúng quán tính của từng hệ điều
+       hành hơn bất kỳ thư viện JS nào tự tính toạ độ chạm. */
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    outline: none;
+}
+
+.reels-viewer__track::-webkit-scrollbar {
+    display: none;
+}
+
+.reels-slide {
+    position: relative;
+    height: 100dvh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.reels-slide__bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(28px) brightness(.4);
+    transform: scale(1.15);
+}
+
+.reels-slide__media {
+    position: relative;
+    height: 100%;
+    max-width: 100%;
+    aspect-ratio: 9 / 16;
+    background: #000;
+}
+
+/* Chỉ nhắm phần tử phát video — info và cột nút cũng là con trực tiếp của
+   media, dùng selector con chung sẽ kéo giãn chúng full khung. */
+.reels-slide__media > video,
+.reels-slide__media > iframe,
+.reels-slide__poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border: 0;
+}
+
+.reels-slide__poster {
+    object-fit: cover;
+}
+
+/* iframe YouTube nuốt sự kiện chạm/cuộn, lớp phủ này trả chúng lại cho track */
+.reels-slide__shield {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+}
+
+/* Biểu tượng ▶ giữa video, chỉ hiện khi đang tạm dừng */
+.reels-slide__playpause {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Không chặn click: cú bấm phải rơi xuống vùng video bên dưới để bật lại */
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .15s ease;
+}
+
+.reels-slide__playpause i {
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, .45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: rgba(255, 255, 255, .9);
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 5px; /* căn quang học cho hình tam giác */
+}
+
+.reels-slide[data-paused="1"] .reels-slide__playpause {
+    opacity: 1;
+}
+
+/* Neo theo .reels-slide__media nên luôn bám mép khung video, kể cả khi
+   desktop để hai dải đen hai bên. */
+.reels-slide__info {
+    position: absolute;
+    left: 0;
+    right: 62px;
+    bottom: 0;
+    z-index: 3;
+    padding: 40px 12px 16px;
+    color: #fff;
+    background: linear-gradient(to top, rgba(0, 0, 0, .75), transparent);
+}
+
+.reels-slide__title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ---------- Mô tả: cắt 2 dòng, bấm để mở ---------- */
+
+.reels-slide__desc {
+    margin: 0 0 10px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, .88);
+}
+
+.reels-slide__desc-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.reels-slide__desc-toggle {
+    display: none;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #fff;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* Chỉ khi JS đo được là chữ bị cắt mới mời người dùng bấm */
+.reels-slide__desc.has-more {
+    cursor: pointer;
+}
+
+.reels-slide__desc.has-more .reels-slide__desc-toggle {
+    display: inline;
+}
+
+.reels-slide__desc.is-open .reels-slide__desc-text {
+    display: block;
+    -webkit-line-clamp: unset;
+    /* Mô tả dài không được đẩy sản phẩm ra khỏi màn hình */
+    max-height: 38dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* Trong viewer có nhiều chỗ hơn nên xếp một hàng ngang */
+.reels-slide__info .reels-product {
+    padding: 8px;
+    grid-template-areas: "thumb info buy";
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    max-width: 420px;
+}
+
+.reels-slide__info .reels-product__thumb {
+    width: 44px;
+    height: 44px;
+}
+
+.reels-slide__info .reels-product__name,
+.reels-slide__info .reels-product__price {
+    font-size: 13px;
+}
+
+.reels-slide__info .reels-product__buy {
+    white-space: nowrap;
+    align-self: center;
+}
+
+/* ---------- Cột nút thao tác ----------
+   Neo theo .reels-slide__media nên luôn bám mép phải KHUNG VIDEO.
+   Mặc định (mobile) đè lên video vì không còn chỗ trống hai bên; từ 768px
+   trở lên thì đẩy hẳn ra ngoài mép — xem media query cuối file. */
+
+.reels-actions {
+    position: absolute;
+    right: 6px;
+    bottom: 20px;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
+}
+
+.reels-action {
+    width: 50px;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
+}
+
+.reels-action__icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .18);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    transition: transform .15s ease, background .15s ease;
+}
+
+.reels-action:hover .reels-action__icon {
+    background: rgba(255, 255, 255, .32);
+}
+
+.reels-action.is-active .reels-action__icon {
+    background: var(--theme-color, #ff2d55);
+    transform: scale(1.06);
+}
+
+.reels-action--zalo .reels-action__icon {
+    background: #0068ff;
+}
+
+.reels-action--facebook .reels-action__icon {
+    background: #0084ff;
+}
+
+.reels-action--view {
+    cursor: default;
+}
+
+.reels-viewer__close,
+.reels-viewer__nav {
+    position: absolute;
+    z-index: 5;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .16);
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.reels-viewer__close:hover,
+.reels-viewer__nav:hover {
+    background: rgba(255, 255, 255, .3);
+}
+
+.reels-viewer__close {
+    top: 16px;
+    right: 16px;
+}
+
+.reels-viewer__nav {
+    right: 24px;
+}
+
+.reels-viewer__nav--prev {
+    top: calc(50% - 52px);
+}
+
+.reels-viewer__nav--next {
+    top: calc(50% + 4px);
+}
+
+/* ---------- Responsive ---------- */
+
+/* Từ tablet trở lên: cột nút ra HẲN ngoài mép phải video, không đè lên hình.
+   Chiều cao khung video bị kẹp lại để luôn chừa đủ chỗ cho cột nút — nếu
+   không, màn hình hẹp mà cao sẽ đẩy nút tràn ra ngoài vùng nhìn thấy. */
+@media (min-width: 768px) {
+    .reels-slide__media {
+        height: min(100%, calc((100vw - 170px) * 16 / 9));
+    }
+
+    .reels-actions {
+        left: 100%;
+        right: auto;
+        bottom: 16px;
+        margin-left: 12px;
+        gap: 16px;
+    }
+
+    /* Nút không còn đè lên video nên chữ được dùng trọn bề ngang khung */
+    .reels-slide__info {
+        right: 0;
+    }
+
+    /* Mũi tên lên/xuống chuyển sang mép trái: bên phải giờ là chỗ của cột nút,
+       trên màn hình hẹp mà cao hai thứ này sẽ chồng lên nhau. */
+    .reels-viewer__nav {
+        left: 16px;
+        right: auto;
+    }
+}
+
+@media (max-width: 1199px) {
+    .reels-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 767px) {
+    :root {
+        --reels-gap: 12px;
+    }
+
+    .reels-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .reels-page__title {
+        font-size: 20px;
+    }
+
+    .reels-viewer__nav {
+        display: none;
+    }
+
+    .reels-slide__media {
+        width: 100%;
+        aspect-ratio: auto;
+    }
+
+    .reels-slide__info .reels-product {
+        grid-template-areas: "thumb info" "buy buy";
+        grid-template-columns: 44px minmax(0, 1fr);
+    }
+
+    /* Lưới 2 cột: card hẹp nên bỏ ảnh sản phẩm, chừa chỗ cho tên và giá */
+    .reels-card__overlay {
+        padding: 22px 6px 6px;
+    }
+
+    .reels-card__overlay .reels-product {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "info" "buy";
+        gap: 4px;
+    }
+
+    .reels-card__overlay .reels-product__thumb {
+        display: none;
+    }
+}
