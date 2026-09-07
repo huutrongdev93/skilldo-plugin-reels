@@ -1,0 +1,634 @@
+/* =========================================================================
+   Element "Video ngắn" (ReelsListElement)
+
+   Phần lưới/slider bọc trong .ReelsListElement theo đúng quy ước element.
+   Riêng trình xem (.reels-elv) KHÔNG bọc được: nó được JS chuyển ra <body>
+   vì hiệu ứng cuộn (AOS) đặt transform lên vỏ element, mà transform làm
+   position:fixed neo theo vỏ chứ không theo màn hình.
+   ========================================================================= */
+
+.ReelsListElement .reels-el {
+    position: relative;
+}
+
+.ReelsListElement .reels-el__heading {
+    margin: 0 0 16px;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+/* ---------- Danh sách ---------- */
+
+.ReelsListElement .reels-el__list {
+    display: grid;
+    grid-template-columns: repeat(var(--reels-el-columns, 5), minmax(0, 1fr));
+    gap: 16px;
+}
+
+/* Dạng slider: cùng số cột nhưng cuộn ngang, snap từng thẻ. Không dùng
+   thư viện — scroll-snap cho quán tính vuốt đúng với từng hệ điều hành. */
+.ReelsListElement .reels-el--slider .reels-el__list {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+.ReelsListElement .reels-el--slider .reels-el__list::-webkit-scrollbar {
+    display: none;
+}
+
+.ReelsListElement .reels-el--slider .reels-el__card {
+    flex: 0 0 calc((100% - (var(--reels-el-columns, 5) - 1) * 16px) / var(--reels-el-columns, 5));
+    scroll-snap-align: start;
+}
+
+/* ---------- Thẻ video ---------- */
+
+.ReelsListElement .reels-el__card {
+    min-width: 0;
+}
+
+.ReelsListElement .reels-el__media {
+    position: relative;
+    display: block;
+    /* Khung 9:16 cố định để lưới không nhảy khi poster tải xong */
+    aspect-ratio: 9 / 16;
+    border-radius: 12px;
+    background: #000;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .12);
+}
+
+.ReelsListElement .reels-el__poster,
+.ReelsListElement .reels-el__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border: 0;
+}
+
+.ReelsListElement .reels-el__video {
+    z-index: 1;
+}
+
+/* Link mở video phủ kín ảnh nhưng nằm dưới overlay đính kèm */
+.ReelsListElement .reels-el__link {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: block;
+}
+
+.ReelsListElement .reels-el__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, .45);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    pointer-events: none;
+    transition: opacity .2s ease;
+}
+
+/* Đang phát xem trước thì ẩn nút ▶ đi cho gọn khung */
+.ReelsListElement .reels-el__card.is-previewing .reels-el__play {
+    opacity: 0;
+}
+
+.ReelsListElement .reels-el__views {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, .55);
+    color: #fff;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.ReelsListElement .reels-el__overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    padding: 26px 8px 8px;
+    background: linear-gradient(to top, rgba(0, 0, 0, .5), transparent);
+}
+
+.ReelsListElement .reels-el__name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: inherit;
+    text-decoration: none;
+}
+
+.ReelsListElement .reels-el__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ---------- Nút chuyển của slider ---------- */
+
+.ReelsListElement .reels-el__nav {
+    position: absolute;
+    top: 40%;
+    z-index: 4;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+    color: #111;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .18);
+    cursor: pointer;
+}
+
+.ReelsListElement .reels-el__nav[disabled] {
+    opacity: .35;
+    cursor: default;
+}
+
+.ReelsListElement .reels-el__nav--prev {
+    left: -14px;
+}
+
+.ReelsListElement .reels-el__nav--next {
+    right: -14px;
+}
+
+.ReelsListElement .reels-el--grid .reels-el__nav {
+    display: none;
+}
+
+.ReelsListElement .reels-el__more {
+    margin-top: 18px;
+    text-align: center;
+}
+
+.ReelsListElement .reels-el__more-btn {
+    display: inline-block;
+    padding: 8px 22px;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    font-size: 14px;
+    font-weight: 600;
+    color: inherit;
+    text-decoration: none;
+}
+
+/* ---------- Khối đính kèm (dùng chung markup với plugin) ---------- */
+
+.ReelsListElement .reels-product {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    grid-template-areas: "thumb info" "buy buy";
+    gap: 6px 8px;
+    align-items: center;
+    padding: 6px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, .55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.ReelsListElement .reels-product--no-thumb {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "info" "buy";
+}
+
+.ReelsListElement .reels-product__thumb {
+    grid-area: thumb;
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, .12);
+}
+
+.ReelsListElement .reels-product__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.ReelsListElement .reels-product__info {
+    grid-area: info;
+    min-width: 0;
+}
+
+.ReelsListElement .reels-product__name {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 1.35;
+    color: #fff;
+    text-decoration: none;
+}
+
+.ReelsListElement .reels-product__price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 12px;
+}
+
+.ReelsListElement .reels-product__price-now {
+    color: #fff;
+    font-weight: 700;
+}
+
+.ReelsListElement .reels-product__price-old {
+    color: rgba(255, 255, 255, .6);
+    font-size: 11px;
+    text-decoration: line-through;
+}
+
+.ReelsListElement .reels-product__buy {
+    grid-area: buy;
+    display: block;
+    text-align: center;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--theme-color, #ff2d55);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.ReelsListElement .reels-product__buy:hover {
+    color: #fff;
+    filter: brightness(1.08);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1024px) {
+    .ReelsListElement .reels-el__list {
+        grid-template-columns: repeat(var(--reels-el-columns-tablet, 3), minmax(0, 1fr));
+    }
+
+    .ReelsListElement .reels-el--slider .reels-el__card {
+        flex-basis: calc((100% - (var(--reels-el-columns-tablet, 3) - 1) * 16px) / var(--reels-el-columns-tablet, 3));
+    }
+
+    .ReelsListElement .reels-el__nav {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .ReelsListElement .reels-el__list {
+        grid-template-columns: repeat(var(--reels-el-columns-mobile, 2), minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .ReelsListElement .reels-el--slider .reels-el__card {
+        flex-basis: calc((100% - (var(--reels-el-columns-mobile, 2) - 1) * 10px) / var(--reels-el-columns-mobile, 2));
+    }
+}
+
+/* =========================================================================
+   Trình xem tại chỗ — nằm ngoài .ReelsListElement (JS gắn vào <body>)
+   ========================================================================= */
+
+.reels-elv {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #000;
+}
+
+.reels-elv[hidden] {
+    display: none;
+}
+
+body.reels-elv-open {
+    overflow: hidden;
+}
+
+.reels-elv__track {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    outline: none;
+}
+
+.reels-elv__track::-webkit-scrollbar {
+    display: none;
+}
+
+.reels-elv__slide {
+    position: relative;
+    height: 100dvh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.reels-elv__bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(30px) brightness(.45);
+    transform: scale(1.15);
+}
+
+.reels-elv__media {
+    position: relative;
+    height: 100%;
+    max-width: 100%;
+    aspect-ratio: 9 / 16;
+    background: #000;
+}
+
+/* Chỉ nhắm phần tử phát: info và cột nút cũng là con trực tiếp của media */
+.reels-elv__media > video,
+.reels-elv__media > iframe,
+.reels-elv__poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border: 0;
+}
+
+/* iframe YouTube nuốt sự kiện chạm/cuộn, lớp phủ này trả chúng lại cho track */
+.reels-elv__shield {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+}
+
+.reels-elv__playpause {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 3;
+    transform: translate(-50%, -50%);
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, .45);
+    color: #fff;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    pointer-events: none;
+}
+
+.reels-elv__slide[data-paused="1"] .reels-elv__playpause {
+    display: flex;
+}
+
+.reels-elv__info {
+    position: absolute;
+    left: 0;
+    right: 62px;
+    bottom: 0;
+    z-index: 4;
+    padding: 40px 12px 16px;
+    color: #fff;
+    background: linear-gradient(to top, rgba(0, 0, 0, .75), transparent);
+}
+
+.reels-elv__title {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #fff;
+}
+
+.reels-elv__desc {
+    margin: 0 0 10px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, .85);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Khối đính kèm trong trình xem: rộng rãi hơn ngoài lưới nên nút nằm cùng hàng */
+.reels-elv__info .reels-product {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    grid-template-areas: "thumb info buy";
+    gap: 10px;
+    align-items: center;
+    padding: 8px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .14);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.reels-elv__info .reels-product--no-thumb {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "info buy";
+}
+
+.reels-elv__info .reels-product__thumb {
+    grid-area: thumb;
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.reels-elv__info .reels-product__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.reels-elv__info .reels-product__info {
+    grid-area: info;
+    min-width: 0;
+}
+
+.reels-elv__info .reels-product__name {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 13px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.reels-elv__info .reels-product__price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 13px;
+}
+
+.reels-elv__info .reels-product__price-now {
+    color: #fff;
+    font-weight: 700;
+}
+
+.reels-elv__info .reels-product__price-old {
+    color: rgba(255, 255, 255, .6);
+    font-size: 11px;
+    text-decoration: line-through;
+}
+
+.reels-elv__info .reels-product__buy {
+    grid-area: buy;
+    display: block;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--theme-color, #ff2d55);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+/* ---------- Cột nút bên phải ---------- */
+
+.reels-elv__actions {
+    position: absolute;
+    right: 8px;
+    bottom: 24px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.reels-elv__action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    width: 46px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.reels-elv__action-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, .45);
+    font-size: 17px;
+}
+
+.reels-elv__action.is-active .reels-elv__action-icon {
+    color: #ff2d55;
+}
+
+/* ---------- Nút đóng / chuyển ---------- */
+
+.reels-elv__close,
+.reels-elv__nav {
+    position: absolute;
+    z-index: 6;
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, .5);
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.reels-elv__close {
+    top: 16px;
+    left: 16px;
+}
+
+.reels-elv__nav--prev {
+    top: 50%;
+    right: 16px;
+    transform: translateY(-70px);
+}
+
+.reels-elv__nav--next {
+    top: 50%;
+    right: 16px;
+    transform: translateY(20px);
+}
+
+.reels-elv__all {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 6;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, .5);
+    color: #fff;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+@media (max-width: 767px) {
+    .reels-elv__nav {
+        display: none;
+    }
+}

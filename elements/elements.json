@@ -1,0 +1,7 @@
+{
+    "general": {
+        "ReelsListElement": {
+            "path": "elements/reels-list/reels-list.widget.php"
+        }
+    }
+}

@@ -13,6 +13,7 @@ return [
     'empty'     => 'Chưa có video nào.',
     'load_more' => 'Xem thêm',
     'view_detail' => 'Xem chi tiết',
+    'view_all'  => 'Xem tất cả video',
     'buy_now'   => 'Mua ngay',
 
     'action' => [

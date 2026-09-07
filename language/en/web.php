@@ -13,6 +13,7 @@ return [
     'empty'     => 'No video yet.',
     'load_more' => 'Load more',
     'view_detail' => 'View detail',
+    'view_all'  => 'View all videos',
     'buy_now'   => 'Buy now',
 
     'action' => [
