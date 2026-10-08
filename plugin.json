@@ -4,7 +4,7 @@
     "url": "https://sikido.vn",
     "description": "Video ngắn dạng TikTok, mỗi video đính kèm một sản phẩm kèm nút mua ngay.",
     "author": "SkillDo",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "thumb": "assets/thumb.jpg",
     "autoload": {
         "alias": "Reels"

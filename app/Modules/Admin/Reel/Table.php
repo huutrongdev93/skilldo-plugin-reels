@@ -28,7 +28,15 @@ class Table extends SKDObjectTable
 
         $this->_column_headers['image'] = [
             'label'  => trans('table.image'),
-            'column' => fn($item, $args) => ColumnImage::make('image', $item, $args)->size(60),
+            // getPoster(): ảnh đã chọn, không có thì thumbnail YouTube (L186). ColumnImage đưa link YouTube
+            // tuyệt đối qua Image::medium nên ô trống.
+            'column' => fn($item, $args) => ColumnView::make('image', $item, $args)->html(function () use ($item) {
+                $poster = $item->getPoster();
+
+                echo $poster === ''
+                    ? \Image::medium('')->attributes(['style' => 'width:60px;max-width:60px;'])->html()
+                    : '<img src="' . html_escape($poster) . '" alt="" loading="lazy" style="width:60px;max-width:60px;">';
+            }),
         ];
 
         $this->_column_headers['title'] = [
