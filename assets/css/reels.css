@@ -547,8 +547,11 @@ body.reels-viewer-open {
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, .18);
+    /* Nền tối mờ thay vì trắng mờ: trên video nền sáng nút trắng gần như biến mất (L171) */
+    background: rgba(0, 0, 0, .45);
     backdrop-filter: blur(4px);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -557,7 +560,7 @@ body.reels-viewer-open {
 }
 
 .reels-action:hover .reels-action__icon {
-    background: rgba(255, 255, 255, .32);
+    background: rgba(0, 0, 0, .65);
 }
 
 .reels-action.is-active .reels-action__icon {
@@ -583,7 +586,7 @@ body.reels-viewer-open {
     z-index: 5;
     border: 0;
     border-radius: 50%;
-    background: rgba(255, 255, 255, .16);
+    background: rgba(0, 0, 0, .45);
     color: #fff;
     width: 40px;
     height: 40px;
@@ -595,7 +598,7 @@ body.reels-viewer-open {
 
 .reels-viewer__close:hover,
 .reels-viewer__nav:hover {
-    background: rgba(255, 255, 255, .3);
+    background: rgba(0, 0, 0, .65);
 }
 
 .reels-viewer__close {
